@@ -28,3 +28,15 @@ def run_scrape(background: BackgroundTasks, token: str):
         raise HTTPException(status_code=403, detail="forbidden")
     background.add_task(main)  # запускаем в фоне и сразу отвечаем
     return {"status": "queued"}
+
+
+@app.get("/debug/db")
+def debug_db():
+    u = make_url(DATABASE_URL)
+    return {
+        "driver": u.drivername,       # должно быть postgresql+psycopg
+        "host": u.host,               # *.supabase.co
+        "port": u.port,               # 5432 или 6543 (pooler)
+        "database": u.database,       # postgres (по умолчанию)
+        "sslmode": u.query.get("sslmode")
+    }
