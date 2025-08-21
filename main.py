@@ -18,11 +18,15 @@ def parse_args():
                    help="запуск без окна браузера")
     p.add_argument("--delay", type=int, default=600,
                    help="пауза между скроллами (мс)")
+    p.add_argument("--scrape-once", action="store_true",
+                   help="Run scraper once and exit")
     return p.parse_args()
 
 
 def main():
     args = parse_args()
+    if not args.scrape_once:
+        return
     query = args.query
     stop_collecting = False
     if (len(query) > 1):
