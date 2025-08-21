@@ -22,7 +22,7 @@ def get_products():
     ]
 
 
-@app.get("/run-scrape")
+@app.post("/run-scrape")
 def run_scrape(background: BackgroundTasks, token: str):
     if token != os.getenv("CRON_TOKEN"):
         raise HTTPException(status_code=403, detail="forbidden")
