@@ -1,5 +1,4 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException
-from sqlalchemy.engine import make_url
 from main import main
 import os
 app = FastAPI()
@@ -31,13 +30,18 @@ def run_scrape(background: BackgroundTasks, token: str):
     return {"status": "queued"}
 
 
-@app.get("/debug/db")
-def debug_db():
-    u = make_url("DATABASE_URL")
+@app.get("/debug/db-env")
+def debug_db_env():
+    raw = os.getenv("DATABASE_URL", "")
+    if not raw:
+        return {"error": "DATABASE_URL is not set"}
+    p = urlparse(raw)
+    qs = parse_qs(p.query)
     return {
-        "driver": u.drivername,       # должно быть postgresql+psycopg
-        "host": u.host,               # *.supabase.co
-        "port": u.port,               # 5432 или 6543 (pooler)
-        "database": u.database,       # postgres (по умолчанию)
-        "sslmode": u.query.get("sslmode")
+        "scheme": p.scheme,               # например postgresql+psycopg
+        "host": p.hostname,
+        "port": p.port,
+        "database": (p.path or "").lstrip("/"),
+        "sslmode": (qs.get("sslmode") or [None])[0],
+        # ни user, ни password не возвращаем
     }
