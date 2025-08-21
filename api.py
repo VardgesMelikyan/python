@@ -1,4 +1,5 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException
+from sqlalchemy.engine import make_url
 from main import main
 import os
 app = FastAPI()
@@ -32,7 +33,7 @@ def run_scrape(background: BackgroundTasks, token: str):
 
 @app.get("/debug/db")
 def debug_db():
-    u = make_url(DATABASE_URL)
+    u = make_url("DATABASE_URL")
     return {
         "driver": u.drivername,       # должно быть postgresql+psycopg
         "host": u.host,               # *.supabase.co
