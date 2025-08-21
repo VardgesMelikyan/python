@@ -1,9 +1,0 @@
-1) создать виртуальное окружение
-python -m venv .venv
-
-2) активировать
-.\.venv\Scripts\Activate.ps1
-
-pip freeze > requirements.txt   # зафиксировать версии
-# при переустановке на другом месте:
-pip install -r requirements.txt
