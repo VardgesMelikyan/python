@@ -1,0 +1,5 @@
+card.wb.ru/cards/v4/list
+catalog.wb.ru/menu/v11/api
+marketplace-sentry.wb.ru/api/183/envelope/
+search-tags.wb.ru/search-tags/api/v2/search/query
+user-storage-01.wb.ru/api/v3/routes

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+*.sqlite
+*.db
+*.log
+*.csv
+*.json
+.env
+venv/
+.env/
+.idea/
+.vscode/
+# OS
+.DS_Store
+Thumbs.db
+# Jupyter
+.ipynb_checkpoints/
+# Others
+*.bak
+*.tmp
