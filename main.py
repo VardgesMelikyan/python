@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 from urllib.parse import quote_plus, urlsplit
 # удобно собирать списки/множества по ключам
 from collections import defaultdict
+from db_sqlalchemy import init_db, upsert_products
 import time
 import argparse
 
