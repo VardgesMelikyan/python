@@ -14,7 +14,7 @@ def parse_args(argv=None):
                    help="поисковая фраза")
     p.add_argument("--max", type=int, default=40,
                    help="сколько карточек собрать")
-    p.add_argument("--headless", action="store_true",
+    p.add_argument("--headless", action="store_false",
                    help="запуск без окна браузера")
     p.add_argument("--delay", type=int, default=600,
                    help="пауза между скроллами (мс)")
@@ -25,8 +25,6 @@ def parse_args(argv=None):
 
 def main(argv=None):
     args = parse_args(argv)
-    if not args.scrape_once:
-        return
     query = args.query
     stop_collecting = False
     if (len(query) > 1):
