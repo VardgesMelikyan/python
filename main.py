@@ -7,7 +7,7 @@ import time
 import argparse
 
 
-def parse_args():
+def parse_args(argv=None):
     p = argparse.ArgumentParser()
 
     p.add_argument("query", nargs="?", default="кроссовки",
@@ -20,11 +20,11 @@ def parse_args():
                    help="пауза между скроллами (мс)")
     p.add_argument("--scrape-once", action="store_true",
                    help="Run scraper once and exit")
-    return p.parse_args()
+    return p.parse_args(argv)
 
 
-def main():
-    args = parse_args()
+def main(argv=None):
+    args = parse_args(argv)
     if not args.scrape_once:
         return
     query = args.query
