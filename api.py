@@ -1,4 +1,6 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException
+from db_sqlalchemy import DATABASE_URL, Base, engine, SessionLocal, Product
+from starlette.responses import JSONResponse
 from urllib.parse import urlparse, parse_qs
 from main import main
 import os
@@ -46,3 +48,66 @@ def debug_db_env():
         "sslmode": (qs.get("sslmode") or [None])[0],
         # ни user, ни password не возвращаем
     }
+
+
+@app.get("/debug/db-ping")
+def debug_db_ping():
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {"ok": True}
+    except Exception as e:
+        return JSONResponse({"error": f"{type(e).__name__}: {e}"}, status_code=500)
+
+# --- 1) СОЗДАТЬ ТАБЛИЦЫ В ТЕКУЩЕЙ БД ---
+
+
+@app.api_route("/init-db", methods=["GET", "POST"])
+def init_db(token: str = Query(None)):
+    if token != CRON_TOKEN:
+        raise HTTPException(status_code=403, detail="forbidden")
+    Base.metadata.create_all(bind=engine)
+    # покажем, куда именно подключаемся, но без секретов
+    u = DATABASE_URL if isinstance(
+        DATABASE_URL, URL) else make_url(str(DATABASE_URL))
+    return {
+        "status": "created",
+        "driver": u.drivername,
+        "host": u.host,
+        "database": u.database,
+        "schema": "public",
+        "tables": sorted(list(Base.metadata.tables.keys())),
+    }
+
+# --- 2) ТЕСТОВАЯ ВСТАВКА ---
+
+
+@app.api_route("/insert-test", methods=["GET", "POST"])
+def insert_test(token: str = Query(None)):
+    if token != CRON_TOKEN:
+        raise HTTPException(status_code=403, detail="forbidden")
+
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+
+    # создадим уникальный pid на основе timestamp, чтобы не упираться в unique(pid)
+    test_pid = int(now.timestamp())
+
+    with SessionLocal() as s:
+        p = Product(pid=test_pid, name="test", brand="test",
+                    price=0.0, rating=0.0, feedbacks=0,
+                    url="https://example.com", source="init", query="init",
+                    parsed_at=now)
+        s.add(p)
+        s.commit()
+    return {"inserted_pid": test_pid}
+
+# --- 3) ПРОВЕРИТЬ КОЛ-ВО ЗАПИСЕЙ ---
+
+
+@app.get("/products/count")
+def products_count():
+    with engine.connect() as conn:
+        res = conn.execute(text("select count(*) from products"))
+        n = res.scalar_one()
+    return {"count": n}
