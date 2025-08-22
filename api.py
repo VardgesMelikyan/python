@@ -1,4 +1,4 @@
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Query
 from db_sqlalchemy import DATABASE_URL, Base, engine, SessionLocal, Product
 from starlette.responses import JSONResponse
 from urllib.parse import urlparse, parse_qs
