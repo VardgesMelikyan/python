@@ -4,7 +4,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import create_engine, pool
 from sqlalchemy.engine.url import make_url
-
+from urllib.parse import urlparse, urlunparse, parse_qsl
 # <-- импортируем Base из твоего ORM-модуля
 from db_sqlalchemy import Base
 
