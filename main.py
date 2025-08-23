@@ -47,15 +47,12 @@ def main(argv=None):
                     return
                 ctype = (resp.headers.get("content-type") or "").lower()
                 # Фильтруем потенциальные API-эндпоинты WB, которые возвращают JSON
-                if "application/json" not in ctype:
-                    return
                 parts = urlsplit(resp.url)
                 if not parts.netloc.endswith("wb.ru"):
                     return
 
                 if "cards/v4/list" not in parts.path:
                     return
-
                 try:
                     data = resp.json()
                 except Exception as e:
@@ -122,7 +119,6 @@ def main(argv=None):
                 if added > 0:
                     last_added_at = time.time()
             page.on("response", on_response)
-
             page.goto(
                 "https://www.wildberries.ru/catalog/0/search.aspx?search=" +
                 quote_plus(query),
